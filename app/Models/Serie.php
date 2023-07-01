@@ -15,8 +15,9 @@ class Serie extends Model
     /** Cria um escopo global que é executado por todos os métodos
      * do model
      */
-    protected static function booted(){
-        self::addGlobalScope('ordered', function(Builder $queryBuilder){
+    protected static function booted()
+    {
+        self::addGlobalScope('ordered', function (Builder $queryBuilder) {
             $queryBuilder->orderBy('nome');
         });
     }
