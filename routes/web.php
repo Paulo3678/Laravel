@@ -19,11 +19,14 @@ Route::get('/', function () {
 });
 
 /** Se o controller seguir o padrão de nomenclatura, só isso já mapeia todas as rotas */
-// Route::resource('/series', SeriesController::class);
+Route::resource('/series', SeriesController::class)->only(
+    ['index', 'create', 'store', 'destroy', 'edit', 'update']
+);
+// Route::post('/series/destroy/{serie}', [SeriesController::class, 'destroy'])->name('series.destroy');
 
 // Para simplificar a definição de rotas
-Route::controller(SeriesController::class)->group(function () {
-    Route::get('/series', 'index');
-    Route::get('/series/criar', 'create');
-    Route::post('/series/salvar', 'store');
-});
+// Route::controller(SeriesController::class)->group(function () {
+//     Route::get('/series', 'index')->name('series.index');
+//     Route::get('/series/criar', 'create')->name('series.create');
+//     Route::post('/series/salvar', 'store')->name('series.store');
+// });
