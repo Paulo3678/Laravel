@@ -15,9 +15,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/series');
 });
 
-Route::get('/series', [SeriesController::class, 'index']);
-Route::get('/series/criar', [SeriesController::class, 'create']);
-Route::post('/series/salvar', [SeriesController::class, 'store']);
+/** Se o controller seguir o padrão de nomenclatura, só isso já mapeia todas as rotas */
+// Route::resource('/series', SeriesController::class);
+
+// Para simplificar a definição de rotas
+Route::controller(SeriesController::class)->group(function () {
+    Route::get('/series', 'index');
+    Route::get('/series/criar', 'create');
+    Route::post('/series/salvar', 'store');
+});
