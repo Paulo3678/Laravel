@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Serie;
+use App\Models\Series;
 
 class SeasonsController extends Controller
 {
-    public function index(Serie $series)
+    public function index(Series $series)
     {
+        $seasons = $series->seasons()->with('episodes')->get();
 
-        /** Eager loading-> Já faz a busca dizendo que quer outros dados junto */
-        $seasons = $series->temporadas()->with('episodes')->get();
-
-        return view("seasons.index")->with("seasons", $seasons);
+        return view('seasons.index')->with('seasons', $seasons)->with('series', $series);
     }
 }

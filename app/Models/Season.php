@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Season extends Model
 {
     use HasFactory;
-    protected $fillable = ['numero'];
+    protected $fillable = ['number'];
 
     public function series()
     {
-        /** Pertence a uma série */
-        return $this->belongsTo(Serie::class);
+        return $this->belongsTo(Series::class);
     }
 
     public function episodes()
