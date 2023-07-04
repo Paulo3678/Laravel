@@ -7,6 +7,7 @@ use App\Mail\SeriesCreated;
 use App\Models\Series;
 use App\Models\User;
 use App\Repositories\SeriesRepository;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -36,21 +37,25 @@ class SeriesController extends Controller
     {
         $serie = $this->repository->add($request);
 
+
+        /**
+         * Mensageria: Coloca o e-mail numa fila 
+         */
         // Enviando um e-mail
         $userList = User::all();
-        foreach ($userList as $user) {
+        foreach ($userList as $index => $user) {
             $email = new SeriesCreated(
                 $serie->nome,
                 $serie->id,
                 (int) $serie->seasonsQty,
                 (int) $serie->episodesPerSeason
             );
-            Mail::to($user)->send($email);
+
+            $when = now()->addSeconds($index * 5);
+            Mail::to($user)->later($when, $email);
+            // later()-> adiciona o processo na fila, mas atrasa o processamento dele para alguns segundos
         }
-
-
-
-
+        
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$serie->nome}' adicionada com sucesso");
     }
