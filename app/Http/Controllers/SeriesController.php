@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\Autenticador;
 use App\Http\Requests\SeriesFormRequest;
+use App\Mail\SeriesCreated;
 use App\Models\Series;
+use App\Models\User;
 use App\Repositories\SeriesRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class SeriesController extends Controller
 {
-
-    public function __construct(private SeriesRepository $repository) {
-        $this->middleware(Autenticador::class)->except('index');
+    public function __construct(private SeriesRepository $repository)
+    {
+        $this->middleware('auth')->except('index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Validador de login padrão do laravel
-        Auth::check();
-
         $series = Series::all();
         $mensagemSucesso = session('mensagem.sucesso');
 
@@ -36,8 +36,23 @@ class SeriesController extends Controller
     {
         $serie = $this->repository->add($request);
 
+        // Enviando um e-mail
+        $userList = User::all();
+        foreach ($userList as $user) {
+            $email = new SeriesCreated(
+                $serie->nome,
+                $serie->id,
+                (int) $serie->seasonsQty,
+                (int) $serie->episodesPerSeason
+            );
+            Mail::to($user)->send($email);
+        }
+
+
+
+
         return to_route('series.index')
-        ->with('mensagem.sucesso', "Série '{$serie->nome}' adicionada com sucesso");
+            ->with('mensagem.sucesso', "Série '{$serie->nome}' adicionada com sucesso");
     }
 
     public function destroy(Series $series)

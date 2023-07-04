@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UsersController extends Controller
+class UsersController
 {
     public function create()
     {
@@ -17,16 +17,11 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $data = $request->except(['_token']);
-
-        // Hash::make(...)-> Faz o password_hash de uma senha
         $data['password'] = Hash::make($data['password']);
-        $user = User::create($data);
 
-        // Faz com que um usuario fique no estado "logado"
+        $user = User::create($data);
         Auth::login($user);
 
         return to_route('series.index');
     }
-
-   
 }
