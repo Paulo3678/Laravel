@@ -32,10 +32,10 @@ class SeriesController extends Controller
 
     public function store(SeriesFormRequest $request)
     {
-        // dispatch(); Faz a mesma coisa que o event()
+        $coverPath = $request->file('cover')->store('series_cover', 'public');
+        $request->coverPath = $coverPath;
         SeriesCreate::dispatch($request); 
-        
-        
+           
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$request->nome}' adicionada com sucesso");
     }
@@ -43,6 +43,8 @@ class SeriesController extends Controller
     public function destroy(Series $series)
     {
         $series->delete();
+
+        
 
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso");

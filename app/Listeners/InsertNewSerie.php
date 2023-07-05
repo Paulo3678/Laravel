@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\SeriesCreate;
 use App\Events\SeriesCreated;
 use App\Repositories\SeriesRepository;
+use Exception;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -38,5 +39,6 @@ class InsertNewSerie
         );
 
         event($seriesCreatedEvent);
+        // throw new Exception("ABACATE");
     }
 }
