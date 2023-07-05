@@ -2,7 +2,10 @@
 
 
     <div class="d-flex justify-center">
-        <img src="{{ asset('storage/' . $series->cover) }}" alt="Capa da série" style="height: 400px;" class="img-fluid">
+        <img src="{{ 
+            $series->cover == null ? asset('storage/series_cover/default.png') :
+            asset('storage/' . $series->cover)
+            }}" alt="Capa da série" style="height: 400px;" class="img-fluid">
     </div>
 
 

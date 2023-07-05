@@ -6,6 +6,7 @@ use App\Events\SeriesCreate;
 use App\Models\Series;
 use Illuminate\Http\Request;
 use App\Events\SeriesCreated;
+use App\Events\SeriesDestroyed;
 use App\Repositories\SeriesRepository;
 use App\Http\Requests\SeriesFormRequest;
 
@@ -44,7 +45,7 @@ class SeriesController extends Controller
     {
         $series->delete();
 
-        
+        SeriesDestroyed::dispatch($series->cover);
 
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso");

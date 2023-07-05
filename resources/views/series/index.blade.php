@@ -8,7 +8,11 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
 
                 <div class="d-flex justify-content-center align-items-center">
-                    <img src="{{ asset('storage/' . $serie->cover) }}" width="200" alt="Capa da série" class="me-3 img-thumbnail">
+
+                    <img src="{{ 
+                        $serie->cover == null ? asset('storage/series_cover/default.png') :
+                        asset('storage/' . $serie->cover)
+                        }}" width="200" alt="Capa da série" class="me-3 img-thumbnail">
 
                     @auth <a href="{{ route('seasons.index', $serie->id) }}"> @endauth
                         {{ $serie->nome }}
