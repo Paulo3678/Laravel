@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SeriesCreate;
 use App\Models\Series;
 use Illuminate\Http\Request;
 use App\Events\SeriesCreated;
@@ -31,18 +32,12 @@ class SeriesController extends Controller
 
     public function store(SeriesFormRequest $request)
     {
-        $serie = $this->repository->add($request);
-        $seriesCreatedEvent = new SeriesCreated(
-            $serie->nome,
-            $serie->id,
-            $request->seasonsQty,
-            $request->episodesPerSeason
-        );
-
-        event($seriesCreatedEvent);
+        // dispatch(); Faz a mesma coisa que o event()
+        SeriesCreate::dispatch($request); 
+        
         
         return to_route('series.index')
-            ->with('mensagem.sucesso', "Série '{$serie->nome}' adicionada com sucesso");
+            ->with('mensagem.sucesso', "Série '{$request->nome}' adicionada com sucesso");
     }
 
     public function destroy(Series $series)

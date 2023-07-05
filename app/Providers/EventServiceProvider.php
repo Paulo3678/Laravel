@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\SeriesCreate;
 use App\Events\SeriesCreated;
 use App\Listeners\EmailUsersAboutSeriesCreated;
+use App\Listeners\InsertNewSerie;
 use App\Listeners\LogSeriesCreated;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -20,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        SeriesCreate::class=>[
+            InsertNewSerie::class
         ],
         SeriesCreated::class => [
             EmailUsersAboutSeriesCreated::class,
