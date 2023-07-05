@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SeriesFormRequest;
-use App\Mail\SeriesCreated;
 use App\Models\Series;
-use App\Models\User;
-use App\Repositories\SeriesRepository;
-use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
+use App\Events\SeriesCreated;
+use App\Repositories\SeriesRepository;
+use App\Http\Requests\SeriesFormRequest;
 
 class SeriesController extends Controller
 {
@@ -36,25 +32,14 @@ class SeriesController extends Controller
     public function store(SeriesFormRequest $request)
     {
         $serie = $this->repository->add($request);
+        $seriesCreatedEvent = new SeriesCreated(
+            $serie->nome,
+            $serie->id,
+            $request->seasonsQty,
+            $request->episodesPerSeason
+        );
 
-
-        /**
-         * Mensageria: Coloca o e-mail numa fila 
-         */
-        // Enviando um e-mail
-        $userList = User::all();
-        foreach ($userList as $index => $user) {
-            $email = new SeriesCreated(
-                $serie->nome,
-                $serie->id,
-                (int) $serie->seasonsQty,
-                (int) $serie->episodesPerSeason
-            );
-
-            $when = now()->addSeconds($index * 5);
-            Mail::to($user)->later($when, $email);
-            // later()-> adiciona o processo na fila, mas atrasa o processamento dele para alguns segundos
-        }
+        event($seriesCreatedEvent);
         
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$serie->nome}' adicionada com sucesso");
