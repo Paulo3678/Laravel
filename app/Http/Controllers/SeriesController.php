@@ -33,10 +33,12 @@ class SeriesController extends Controller
 
     public function store(SeriesFormRequest $request)
     {
-        $coverPath = $request->file('cover')->store('series_cover', 'public');
+        $coverPath = $request->hasFile('cover') ?
+            $request->file('cover')->store('series_cover', 'public')
+            : null;
         $request->coverPath = $coverPath;
-        SeriesCreate::dispatch($request); 
-           
+        SeriesCreate::dispatch($request);
+
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$request->nome}' adicionada com sucesso");
     }
